@@ -5,12 +5,12 @@ import type { XMLHttpRequestInterceptor } from '@mswjs/interceptors/XMLHttpReque
 import type { Hookable, HookKeys } from 'hookable'
 
 export type BrowserInterceptor = BatchInterceptor<
-  (XMLHttpRequestInterceptor | FetchInterceptor)[],
+  (FetchInterceptor | XMLHttpRequestInterceptor)[],
   HttpRequestEventMap
 >
 
 export type NodeInterceptor = BatchInterceptor<
-  (ClientRequestInterceptor | XMLHttpRequestInterceptor | FetchInterceptor)[],
+  (ClientRequestInterceptor | FetchInterceptor | XMLHttpRequestInterceptor)[],
   HttpRequestEventMap
 >
 

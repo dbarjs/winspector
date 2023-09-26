@@ -1,6 +1,6 @@
-import { ClientRequestInterceptor } from '@mswjs/interceptors/lib/node/interceptors/ClientRequest'
-import { XMLHttpRequestInterceptor } from '@mswjs/interceptors/lib/node/interceptors/XMLHttpRequest'
-import { FetchInterceptor } from '@mswjs/interceptors/lib/node/interceptors/fetch'
+import { ClientRequestInterceptor } from '@mswjs/interceptors/ClientRequest'
+import { XMLHttpRequestInterceptor } from '@mswjs/interceptors/XMLHttpRequest'
+import { FetchInterceptor } from '@mswjs/interceptors/fetch'
 
 import { createComposable, createInterceptor } from './utils'
 import { createNodeFetch } from './utils/node-fetch'
