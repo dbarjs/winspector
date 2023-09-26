@@ -6,6 +6,7 @@ import { createSafeRequest } from './safe-request'
 export interface UseInterceptorOptions {
   baseUrl?: string
   interceptor?: Interceptor
+  label?: string
 }
 
 export interface UseInterceptorReturn {
@@ -17,13 +18,17 @@ function composable(
   _globalThis: typeof globalThis,
   options: UseInterceptorOptions = {},
 ): UseInterceptorReturn {
-  const { baseUrl, interceptor = getGlobalInterceptor(globalThis) } = options
+  const {
+    baseUrl,
+    interceptor = getGlobalInterceptor(globalThis),
+    label,
+  } = options
 
   if (baseUrl) {
     _globalThis.Request = createSafeRequest(baseUrl)
   }
 
-  const hooks = createListenerHooks(interceptor)
+  const { hooks } = createListenerHooks(interceptor, label)
 
   return {
     interceptor,
