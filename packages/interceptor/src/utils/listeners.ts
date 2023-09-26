@@ -7,8 +7,44 @@ import {
   HookableHooks,
 } from '../types'
 
+function getRequestCookie(
+  request: RequestEvent['request'],
+): string | undefined {
+  const cookieHeader = request.headers.get('cookie')
+
+  if (!cookieHeader?.includes('context-id')) {
+    return
+  }
+
+  const contextIdCookie = cookieHeader
+    .split(';')
+    .find((cookie) => cookie.includes('context-id'))
+
+  if (!contextIdCookie) {
+    return
+  }
+
+  const [key, value] = contextIdCookie.split('=')
+
+  if (key !== 'context-id' || !value) {
+    return
+  }
+
+  return value
+}
+
 function requestListener({ request }: RequestEvent) {
-  console.log('Request intercepted by winspector!', request.url)
+  if (request.headers.has('x-context-id')) {
+    return
+  }
+
+  const value = getRequestCookie(request)
+
+  if (!value) {
+    return
+  }
+
+  request.headers.set('x-context-id', value)
 }
 
 export function createListenerHooks(
@@ -31,5 +67,5 @@ export function createListenerHooks(
     hooks.callHook('response', event)
   })
 
-  return hooks
+  return { hooks }
 }
