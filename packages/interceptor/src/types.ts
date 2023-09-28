@@ -28,3 +28,9 @@ export type ListenerHooks = {
 }
 
 export type HookableHooks = Hookable<ListenerHooks, HookKeys<ListenerHooks>>
+
+export type Config = {
+  appBaseUrl?: string
+  isDebugEnabled?: boolean
+  label?: string
+}

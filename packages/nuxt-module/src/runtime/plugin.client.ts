@@ -2,6 +2,7 @@ import { defineNuxtPlugin, useCookie } from '#app'
 import { useInterceptor } from '@winspector/interceptor'
 
 export default defineNuxtPlugin(() => {
+  const config = useRuntimeConfig()
   const contextId = useCookie('context-id')
 
   globalThis.$fetch = globalThis.$fetch.create({
@@ -18,7 +19,11 @@ export default defineNuxtPlugin(() => {
   })
 
   const { hooks } = useInterceptor({
-    baseUrl: 'http://localhost:3000',
+    config: {
+      isDebugEnabled: true,
+      appBaseUrl: config.public.winspector.appBaseUrl,
+      label: 'Nuxt Client Plugin',
+    },
   })
 
   hooks.hook('request', ({ request }) => {

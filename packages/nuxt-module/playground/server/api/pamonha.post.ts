@@ -1,8 +1,9 @@
 export default defineEventHandler(async (event) => {
   const contentId = getHeader(event, 'x-context-id') || null
+  const config = useRuntimeConfig()
 
   const fetcher = $fetch.create({
-    baseURL: 'http://localhost:4444',
+    baseURL: config.public.apiBaseUrl,
   })
 
   const data = await fetcher('/teste')

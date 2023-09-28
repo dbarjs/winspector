@@ -5,12 +5,13 @@ import {
   addServerPlugin,
   addServerHandler,
 } from '@nuxt/kit'
-
+import { defu } from 'defu'
 import { useInterceptor } from '@winspector/interceptor'
 
 export interface ModuleOptions {
   isEnabled: boolean
-  baseUrl?: string
+  isDebugEnabled?: boolean
+  appBaseUrl?: string
 }
 
 export default defineNuxtModule<ModuleOptions>({
@@ -23,6 +24,20 @@ export default defineNuxtModule<ModuleOptions>({
   },
   setup(inlineOptions, nuxt) {
     const resolver = createResolver(import.meta.url)
+
+    const options = defu(
+      inlineOptions,
+      (nuxt.options.runtimeConfig.public.winspector as ModuleOptions) || {},
+    )
+
+    options.appBaseUrl =
+      options.appBaseUrl || `http://localhost:${nuxt.options.devServer.port}`
+
+    nuxt.options.runtimeConfig.public.winspector = options
+
+    if (!options.isEnabled) {
+      return
+    }
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin.client'))
@@ -38,9 +53,18 @@ export default defineNuxtModule<ModuleOptions>({
       }
 
       useInterceptor({
-        baseUrl: inlineOptions.baseUrl,
-        label: 'Nuxt Module',
+        config: {
+          appBaseUrl: options.appBaseUrl,
+          isDebugEnabled: options.isDebugEnabled,
+          label: 'Nuxt Module',
+        },
       })
     })
   },
 })
+
+declare module '@nuxt/schema' {
+  interface PublicRuntimeConfig {
+    winspector: ModuleOptions
+  }
+}

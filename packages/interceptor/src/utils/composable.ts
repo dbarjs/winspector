@@ -1,38 +1,62 @@
-import { HookableHooks, Interceptor } from '../types'
+import { HookableHooks, Interceptor, Config } from '../types'
 import { getGlobalInterceptor } from './interceptor'
 import { createListenerHooks } from './listeners'
 import { createSafeRequest } from './safe-request'
 
 export interface UseInterceptorOptions {
-  baseUrl?: string
+  config?: Config
   interceptor?: Interceptor
-  label?: string
 }
 
 export interface UseInterceptorReturn {
-  interceptor: Interceptor
   hooks: HookableHooks
+  interceptor: Interceptor
+  setConfig: (config: Config) => void
 }
 
 function composable(
   _globalThis: typeof globalThis,
   options: UseInterceptorOptions = {},
 ): UseInterceptorReturn {
-  const {
-    baseUrl,
-    interceptor = getGlobalInterceptor(globalThis),
-    label,
-  } = options
+  const { config = {}, interceptor = getGlobalInterceptor(globalThis) } =
+    options
 
-  if (baseUrl) {
-    _globalThis.Request = createSafeRequest(baseUrl)
+  const { hooks } = createListenerHooks(interceptor)
+
+  hooks.hook('request', ({ request }) => {
+    if (config.isDebugEnabled) {
+      const label = config.label || 'winspector'
+
+      console.log(`[${label}]`, request.url)
+    }
+  })
+
+  const setConfig = ({
+    appBaseUrl,
+    isDebugEnabled,
+    label,
+  }: Config = {}): void => {
+    if (appBaseUrl) {
+      config.appBaseUrl = appBaseUrl
+
+      _globalThis.Request = createSafeRequest(appBaseUrl)
+    }
+
+    if (isDebugEnabled) {
+      config.isDebugEnabled = isDebugEnabled
+    }
+
+    if (label) {
+      config.label = label
+    }
   }
 
-  const { hooks } = createListenerHooks(interceptor, label)
+  setConfig(config)
 
   return {
-    interceptor,
     hooks,
+    interceptor,
+    setConfig,
   }
 }
 

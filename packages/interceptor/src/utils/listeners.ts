@@ -33,7 +33,7 @@ function getRequestCookie(
   return value
 }
 
-function requestListener({ request }: RequestEvent) {
+function requestListener({ request }: RequestEvent): void {
   if (request.headers.has('x-context-id')) {
     return
   }
@@ -47,10 +47,7 @@ function requestListener({ request }: RequestEvent) {
   request.headers.set('x-context-id', value)
 }
 
-export function createListenerHooks(
-  interceptor: Interceptor,
-  label?: string,
-): {
+export function createListenerHooks(interceptor: Interceptor): {
   hooks: HookableHooks
 } {
   const hooks = createHooks<ListenerHooks>()
@@ -58,8 +55,6 @@ export function createListenerHooks(
   hooks.hook('request', requestListener)
 
   interceptor.on('request', (event) => {
-    console.log('Request: ', label)
-
     hooks.callHook('request', event)
   })
 
