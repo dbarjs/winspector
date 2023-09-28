@@ -8,7 +8,9 @@ declare global {
     | {
         entry: string
         startTime: number
+        cwd: string
       }
+  var __nuxt_cli__: typeof __winspector_cli__
 }
 
 export {}

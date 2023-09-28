@@ -19,6 +19,8 @@ const command = defineCommand({
     const cwd = resolve(context.args.cwd || '.')
 
     console.log('init', context.args.dir, cwd)
+
+    // TODO: create init command
   },
 })
 

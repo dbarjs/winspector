@@ -7,9 +7,6 @@ export const sharedArgs = {
     type: 'string',
     description: 'Log level',
   },
-} as const
-
-export const legacyRootDirArgs = {
   rootDir: {
     type: 'positional',
     description: 'Root Directory',

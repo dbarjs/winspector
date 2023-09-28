@@ -1,4 +1,4 @@
-import { bold, gray, green } from 'colorette'
+import { bold, gray, green, redBright } from 'colorette'
 import { tryRequireModule } from './cjs'
 
 export function showVersions(cwd: string) {
@@ -9,8 +9,9 @@ export function showVersions(cwd: string) {
   const nitroVersion = getPkgVersion('nitropack')
   console.log(
     gray(
-      green(`Nuxt ${bold(nuxtVersion)}`) +
-        (nitroVersion ? ` with Nitro ${bold(nitroVersion)}` : ''),
+      redBright('Winspector') +
+        (nuxtVersion ? ` with ${green(`Nuxt ${bold(nuxtVersion)}`)}` : '') +
+        (nitroVersion ? ` and Nitro ${bold(nitroVersion)}` : ''),
     ),
   )
 }

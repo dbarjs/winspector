@@ -8,9 +8,9 @@ export default defineBuildConfig({
       exportConditions: ['production', 'node'] as any,
     },
   },
-  entries: ['src/index'],
+  entries: ['src/cli/index'],
   externals: [
-    '@nuxt/test-utils',
+    'nuxi',
     'fsevents',
     'node:url',
     'node:buffer',
@@ -20,4 +20,5 @@ export default defineBuildConfig({
     'node:path',
     'node:os',
   ],
+  failOnWarn: false,
 })
