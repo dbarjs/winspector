@@ -24,20 +24,18 @@ export default defineNuxtModule<ModuleOptions>({
   },
   setup(inlineOptions, nuxt) {
     const resolver = createResolver(import.meta.url)
-
-    const options = defu(
-      inlineOptions,
-      (nuxt.options.runtimeConfig.public.winspector as ModuleOptions) || {},
-    )
-
-    options.appBaseUrl =
-      options.appBaseUrl || `http://localhost:${nuxt.options.devServer.port}`
-
-    nuxt.options.runtimeConfig.public.winspector = options
+    const runtimeConfig =
+      (nuxt.options.runtimeConfig.winspector as ModuleOptions) || {}
+    const options = defu(inlineOptions, runtimeConfig, {
+      appBaseUrl: 'http://localhost',
+      isEnabled: process.env.NODE_ENV === 'development',
+    })
 
     if (!options.isEnabled) {
       return
     }
+
+    nuxt.options.runtimeConfig.public.winspector = options
 
     // Do not add the extension since the `.ts` will be transpiled to `.mjs` after `npm run prepack`
     addPlugin(resolver.resolve('./runtime/plugin.client'))
